@@ -149,7 +149,7 @@
             border: 1px dashed #777; /* Duidelijke snijlijn */
             margin-top: -1px;  /* Laat randen overlappen */
             margin-left: -1px; /* Laat randen overlappen */
-            padding: 14px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -169,32 +169,35 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #e1e4e8;
-            padding-bottom: 6px;
-            margin-bottom: 4px;
+            padding-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .ticket-logo {
-            max-height: 22px;
-            max-width: 60px;
+            max-height: 20px;
+            max-width: 50px;
             object-fit: contain;
         }
 
         .ticket-number {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 900;
             color: #111;
             letter-spacing: -1.5px;
             line-height: 1;
-            margin: 8px 0;
-            text-decoration: underline; /* Voorkomt verwarring tussen 6 en 9 bij op den kop houden */
+            margin: 6px 0;
+            text-decoration: underline; /* Voorkomt verwarring tussen 6 en 9 */
         }
 
         .ticket-footer {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #666;
             width: 100%;
             border-top: 1px solid #e1e4e8;
             padding-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-weight: 500;
         }
     </style>
@@ -203,7 +206,7 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer strakke tickets die op elkaar aansluiten, inclusief eigen logo of afbeelding.</p>
+        <p>Genereer strakke tickets die op elkaar aansluiten, inclusief eigen logo en websitevermelding.</p>
         
         <div class="form-grid">
             <div class="form-group">
@@ -214,6 +217,11 @@
             <div class="form-group">
                 <label for="eventDate">Datum</label>
                 <input type="text" id="eventDate" value="Zaterdag 15 Nov 2026">
+            </div>
+
+            <div class="form-group">
+                <label for="eventWebsite">Website / URL</label>
+                <input type="text" id="eventWebsite" value="pogo.gent">
             </div>
 
             <div class="form-group">
@@ -262,7 +270,6 @@
     <script>
         let uploadedImageBase64 = '';
 
-        // Luister naar bestand upload om om te zetten naar afbeelding data
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -281,6 +288,7 @@
         function generateTickets() {
             const eventName = document.getElementById('eventName').value;
             const eventDate = document.getElementById('eventDate').value;
+            const eventWebsite = document.getElementById('eventWebsite').value;
             const startNum = parseInt(document.getElementById('startNum').value) || 1;
             const endNum = parseInt(document.getElementById('endNum').value) || 50;
             const cols = parseInt(document.getElementById('cols').value);
@@ -289,7 +297,6 @@
             const container = document.getElementById('ticketContainer');
             container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             
-            // Bereken dynamische hoogte per ticket op basis van gekozen rijen
             const cardHeight = Math.floor(270 / rows) + 'mm';
             
             let html = '';
@@ -303,7 +310,10 @@
                             ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="ticket-logo" alt="Logo">` : ''}
                         </div>
                         <div class="ticket-number"><u>${formattedNum}</u></div>
-                        <div class="ticket-footer">${eventDate}</div>
+                        <div class="ticket-footer">
+                            <span>${eventDate}</span>
+                            <span>${eventWebsite}</span>
+                        </div>
                     </div>
                 `;
             }
