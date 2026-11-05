@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon GO Event Nummber Generator</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            pogo: {
+              red: '#EE1515',
+              blue: '#3B4CCA',
+              yellow: '#FFDE00',
+              dark: '#2A75BB',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Styling specifically for printing A4 sheets */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        width: 100% !important;
+      }
+      .a4-page {
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always;
+        break-after: page;
+        width: 210mm !important;
+        height: 297mm !important;
+        padding: 8mm !important;
+        box-sizing: border-box;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+
+    /* Screen layout for A4 preview */
+    .a4-page {
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      margin: 0 auto 2rem auto;
+      box-sizing: border-box;
+      padding: 8mm;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- TOP HEADER / NAV (Hidden when printing) -->
+  <header class="no-print bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-red-600 text-white p-2 rounded-lg font-bold text-xl leading-none flex items-center justify-center w-10 h-10 shadow-md">
+          <i class="fa-solid fa-[#000] fa-ticket rotate-45"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">Event Ticket & Loting Generator</h1>
+          <p class="text-xs text-slate-400">Maak direct afdrukbare A4 velletjes met unieke nummers</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-bold text-sm shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-print"></i> Printen / Opslaan als PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- SIDEBAR: CONTROL PANEL (Hidden when printing) -->
+    <aside class="no-print lg:col-span-4 space-y-6">
+      
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <h2 class="font-bold text-slate-900 text-base flex items-center gap-2 border-b border-slate-100 pb-2">
+          <i class="fa-solid fa-[#000] fa-sliders text-blue-600"></i> Event Details
+        </h2>
+
+        <!-- Event Name -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Event Titel</label>
+          <input type="text" id="cfg-title" value="Pokémon GO Meetup Gent" oninput="render()" 
+                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+
+        <!-- Event Date & Location -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Datum</label>
+            <input type="text" id="cfg-date" value="Community Day 2026" oninput="render()" 
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Locatie / Tag</label>
+            <input type="text" id="cfg-tag" value="pogo.gent" oninput="render()" 
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Custom Image / Logo -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Event Logo / Afbeelding</label>
+          <div class="flex items-center space-x-2">
+            <input type="file" id="cfg-image-upload" accept="image/*" onchange="handleImageUpload(event)" class="hidden">
+            <button onclick="document.getElementById('cfg-image-upload').click()" class="flex-1 border border-dashed border-slate-300 hover:border-blue-500 hover:bg-slate-50 text-slate-600 text-xs py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-upload"></i> Upload eigen foto/logo
+            </button>
+            <button onclick="resetLogo()" class="px-3 py-2 border border-slate-200 hover:bg-slate-100 text-slate-500 rounded-lg text-xs" title="Reset logo">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NUMBER & LAYOUT CONFIG -->
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <h2 class="font-bold text-slate-900 text-base flex items-center gap-2 border-b border-slate-100 pb-2">
+          <i class="fa-solid fa-[#000] fa-list-ol text-blue-600"></i> Nummers & Layout
+        </h2>
+
+        <!-- Range -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Start Nummer</label>
+            <input type="number" id="cfg-start" value="1" min="1" oninput="render()" 
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Eind Nummer</label>
+            <input type="number" id="cfg-end" value="120" min="1" oninput="render()" 
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Grid layout selection -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Aantal kaartjes per A4-pagina</label>
+          <select id="cfg-grid" onchange="render()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <option value="12" selected>12 kaartjes per vel (3 x 4) - Extra groot & leesbaar</option>
+            <option value="16">16 kaartjes per vel (4 x 4) - Standaard formaat</option>
+            <option value="20">20 kaartjes per vel (4 x 5) - Compact</option>
+          </select>
+        </div>
+
+        <!-- Single or Double Tickets -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Type Lotje</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="border rounded-lg p-2 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="cfg-mode" value="single" checked onchange="render()" class="text-blue-600">
+              <span class="text-xs font-medium">Enkel Nummer</span>
+            </label>
+            <label class="border rounded-lg p-2 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="cfg-mode" value="double" onchange="render()" class="text-blue-600">
+              <span class="text-xs font-medium">Dubbel (met scheurlijn)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Underline numbers toggle -->
+        <div class="flex items-center justify-between pt-2">
+          <label for="cfg-underline" class="text-xs font-semibold text-slate-600 cursor-pointer">
+            Streepje onder getallen (voorkomt 6/9 verwarring)
+          </label>
+          <input type="checkbox" id="cfg-underline" checked onchange="render()" class="w-4 h-4 text-blue-600 rounded">
+        </div>
+      </div>
+
+      <!-- TIPS BOX -->
+      <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-blue-800 text-xs space-y-2">
+        <div class="font-bold text-blue-900 flex items-center gap-1.5">
+          <i class="fa-solid fa-[#000] fa-lightbulb text-amber-500"></i> Handige Print-tip:
+        </div>
+        <p>Stel bij het afdrukken in je browser de <strong>Marges in op "Geen" (None)</strong> en vink <strong>"Achtergrondafbeeldingen"</strong> aan voor het beste resultaat!</p>
+      </div>
+
+    </aside>
+
+    <!-- MAIN PREVIEW CONTAINER -->
+    <main class="lg:col-span-8 flex flex-col items-center">
+      
+      <!-- Page Info bar (Screen only) -->
+      <div class="no-print w-full flex items-center justify-between bg-white px-4 py-2.5 rounded-xl border border-slate-200 mb-4 text-xs font-medium text-slate-600">
+        <div>
+          <span id="total-tickets-count" class="font-bold text-slate-900">0</span> kaartjes gegeneerd 
+          (<span id="total-pages-count" class="font-bold text-blue-600">0</span> A4 pagina's)
+        </div>
+        <div class="text-slate-400">
+          <i class="fa-solid fa-[#000] fa-eye"></i> Live Afdrukvoorbeeld
+        </div>
+      </div>
+
+      <!-- Container where A4 pages will be dynamically inserted -->
+      <div id="print-area" class="print-container w-full flex flex-col items-center">
+        <!-- Rendered Pages will appear here -->
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Default logo (Pokémon GO Ball SVG Data URI)
+    const DEFAULT_LOGO = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="%23fff" stroke="%23333" stroke-width="4"/><path d="M 2,50 A 48,48 0 0,1 98,50 Z" fill="%23ee1515"/><line x1="2" y1="50" x2="98" y2="50" stroke="%23333" stroke-width="6"/><circle cx="50" cy="50" r="14" fill="%23fff" stroke="%23333" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="%23333"/></svg>`;
+
+    let currentLogo = DEFAULT_LOGO;
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentLogo = e.target.result;
+          render();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function resetLogo() {
+      currentLogo = DEFAULT_LOGO;
+      render();
+    }
+
+    function render() {
+      const title = document.getElementById('cfg-title').value || 'Event';
+      const date = document.getElementById('cfg-date').value || '';
+      const tag = document.getElementById('cfg-tag').value || '';
+      const startNum = parseInt(document.getElementById('cfg-start').value) || 1;
+      const endNum = parseInt(document.getElementById('cfg-end').value) || 1;
+      const gridCount = parseInt(document.getElementById('cfg-grid').value);
+      const isDouble = document.querySelector('input[name="cfg-mode"]:checked').value === 'double';
+      const underline = document.getElementById('cfg-underline').checked;
+
+      const printArea = document.getElementById('print-area');
+      printArea.innerHTML = '';
+
+      if (startNum > endNum) {
+        printArea.innerHTML = '<div class="p-8 text-red-500 font-bold">Startnummer kan niet hoger zijn dan het eindnummer.</div>';
+        return;
+      }
+
+      const totalTickets = (endNum - startNum) + 1;
+      const totalPages = Math.ceil(totalTickets / gridCount);
+
+      document.getElementById('total-tickets-count').innerText = totalTickets;
+      document.getElementById('total-pages-count').innerText = totalPages;
+
+      let currentTicketNum = startNum;
+
+      // Layout columns and rows calculation
+      let cols = 3;
+      let rows = 4;
+      if (gridCount === 16) { cols = 4; rows = 4; }
+      if (gridCount === 20) { cols = 4; rows = 5; }
+
+      for (let p = 0; p < totalPages; p++) {
+        // Create A4 Page
+        const page = document.createElement('div');
+        page.className = 'a4-page';
+
+        // Grid Container inside page
+        const grid = document.createElement('div');
+        grid.className = 'w-full h-full grid gap-1.5 border-slate-300';
+        grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+        grid.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+
+        for (let i = 0; i < gridCount; i++) {
+          if (currentTicketNum > endNum) {
+            // Empty placeholder box to maintain clean grid layout
+            const emptyBox = document.createElement('div');
+            emptyBox.className = 'border border-dashed border-slate-200 rounded-md';
+            grid.appendChild(emptyBox);
+            continue;
+          }
+
+          const numStr = currentTicketNum.toString();
+          const numDisplay = underline ? `<u>${numStr}</u>` : numStr;
+
+          const card = document.createElement('div');
+          card.className = 'border-2 border-dashed border-slate-300 rounded-lg p-1.5 flex flex-col justify-between relative bg-white overflow-hidden';
+
+          if (isDouble) {
+            // DOUBLE NUMBER MODE (Tear-off layout)
+            card.innerHTML = `
+              <div class="flex-1 flex flex-col justify-between border-b-2 border-dashed border-slate-400 pb-1 mb-1 relative">
+                <div class="flex items-center justify-between text-[9px] text-slate-500 font-semibold leading-none">
+                  <span class="truncate max-w-[65%]">${title}</span>
+                  <span class="text-blue-600 font-bold">${tag}</span>
+                </div>
+                <div class="flex items-center justify-between my-auto">
+                  <img src="${currentLogo}" class="w-5 h-5 object-contain">
+                  <span class="font-black text-2xl text-slate-900 tracking-tight leading-none">${numDisplay}</span>
+                </div>
+              </div>
+              <div class="flex-1 flex flex-col justify-between pt-0.5">
+                <div class="flex items-center justify-between text-[9px] text-slate-500 font-semibold leading-none">
+                  <span class="truncate max-w-[65%]">${date}</span>
+                  <span class="text-slate-400 text-[8px]">BEWAAR</span>
+                </div>
+                <div class="flex items-center justify-between my-auto">
+                  <img src="${currentLogo}" class="w-5 h-5 object-contain opacity-70">
+                  <span class="font-black text-2xl text-slate-900 tracking-tight leading-none">${numDisplay}</span>
+                </div>
+              </div>
+            `;
+          } else {
+            // SINGLE NUMBER MODE (Big visible number)
+            card.innerHTML = `
+              <div class="flex items-center justify-between text-[10px] text-slate-600 font-bold border-b border-slate-100 pb-1">
+                <span class="truncate max-w-[70%]">${title}</span>
+                <span class="text-blue-600 font-extrabold">${tag}</span>
+              </div>
+              <div class="flex-1 flex items-center justify-center space-x-2 my-1">
+                <img src="${currentLogo}" class="w-8 h-8 object-contain">
+                <span class="font-black text-4xl text-slate-900 tracking-tight leading-none">${numDisplay}</span>
+              </div>
+              <div class="flex items-center justify-between text-[9px] text-slate-400 font-semibold border-t border-slate-100 pt-0.5">
+                <span>${date}</span>
+                <span>#${currentTicketNum}</span>
+              </div>
+            `;
+          }
+
+          grid.appendChild(card);
+          currentTicketNum++;
+        }
+
+        page.appendChild(grid);
+        printArea.appendChild(page);
+      }
+    }
+
+    // Initial Render
+    window.onload = render;
+  </script>
+</body>
+</html>
