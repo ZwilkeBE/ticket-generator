@@ -176,7 +176,6 @@
             margin-bottom: 2px;
         }
 
-        /* Container voor nummer met groter logo als achtergrond */
         .number-container {
             position: relative;
             display: flex;
@@ -189,7 +188,7 @@
 
         .bg-watermark {
             position: absolute;
-            max-width: 95%;  /* Vergroot van 70% naar 95% voor een groter logo */
+            max-width: 95%;  
             max-height: 95%; 
             object-fit: contain;
             opacity: 0.12; 
@@ -224,7 +223,7 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer strakke tickets waarbij het logo groter op de achtergrond achter het nummer verschijnt.</p>
+        <p>Genereer strakke tickets met een groot watermerk op de achtergrond.</p>
         
         <div class="form-grid">
             <div class="form-group">
@@ -331,8 +330,7 @@
                             ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
                             <div class="ticket-number"><u>${formattedNum}</u></div>
                         </div>
-                        <div class="ticket-footer">
-                            <span>Gewonnen? Check</span>
+                        <div class="ticket-footer" style="justify-content: center;">
                             <span>${eventWebsite}</span>
                         </div>
                     </div>
