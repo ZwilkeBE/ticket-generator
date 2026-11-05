@@ -114,7 +114,7 @@
             background-color: #218838;
         }
 
-        /* PRINT STYLING - NAAR ELKAAR TOE VOOR EFFICIËNT SNIJDEN */
+        /* PRINT STYLING */
         @media print {
             body {
                 background: #fff;
@@ -134,21 +134,23 @@
                 break-inside: avoid;
                 page-break-inside: avoid;
                 box-shadow: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
 
         .ticket-grid {
             display: grid;
-            gap: 0px; /* Geen witruimte zodat snijlijnen naadloos overlappen */
+            gap: 0px; 
             max-width: 210mm;
             margin: 0 auto;
             background: #fff;
         }
 
         .ticket-card {
-            border: 1px dashed #777; /* Duidelijke snijlijn */
-            margin-top: -1px;  /* Laat randen overlappen */
-            margin-left: -1px; /* Laat randen overlappen */
+            border: 1px dashed #777; 
+            margin-top: -1px;  
+            margin-left: -1px; 
             padding: 12px 14px;
             display: flex;
             flex-direction: column;
@@ -166,27 +168,43 @@
             color: #555;
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            flex-direction: column;
             align-items: center;
             border-bottom: 1px solid #e1e4e8;
             padding-bottom: 4px;
             margin-bottom: 2px;
         }
 
-        .ticket-logo {
-            max-height: 20px;
-            max-width: 50px;
+        /* Container voor nummer met logo als watermerk op de achtergrond */
+        .number-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+            margin: 4px 0;
+        }
+
+        .bg-watermark {
+            position: absolute;
+            max-width: 70%;
+            max-height: 70%;
             object-fit: contain;
+            opacity: 0.12; /* Subtiele transparantie */
+            pointer-events: none;
         }
 
         .ticket-number {
-            font-size: 2.8rem;
+            position: relative;
+            font-size: 3rem;
             font-weight: 900;
             color: #111;
             letter-spacing: -1.5px;
             line-height: 1;
-            margin: 6px 0;
-            text-decoration: underline; /* Voorkomt verwarring tussen 6 en 9 */
+            text-decoration: underline; 
+            z-index: 1;
         }
 
         .ticket-footer {
@@ -206,22 +224,22 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer strakke tickets die op elkaar aansluiten, inclusief eigen logo en websitevermelding.</p>
+        <p>Genereer strakke tickets waarbij het logo als subtiele achtergrond achter het nummer verschijnt.</p>
         
         <div class="form-grid">
             <div class="form-group">
                 <label for="eventName">Event Naam</label>
-                <input type="text" id="eventName" value="Pokémon GO Meetup Gent">
+                <input type="text" id="eventName" value="GO WILD AREA">
             </div>
 
             <div class="form-group">
                 <label for="eventDate">Datum</label>
-                <input type="text" id="eventDate" value="Zaterdag 15 Nov 2026">
+                <input type="text" id="eventDate" value="ZATERDAG 14/11/2026">
             </div>
 
             <div class="form-group">
                 <label for="eventWebsite">Website / URL</label>
-                <input type="text" id="eventWebsite" value="pogo.gent">
+                <input type="text" id="eventWebsite" value="WWW.POGO.GENT">
             </div>
 
             <div class="form-group">
@@ -238,8 +256,8 @@
                 <label for="cols">Kolommen per pagina</label>
                 <select id="cols">
                     <option value="2">2 kolommen (groot)</option>
-                    <option value="3" selected>3 kolommen (ideaal)</option>
-                    <option value="4">4 kolommen (compact)</option>
+                    <option value="3">3 kolommen</option>
+                    <option value="4" selected>4 kolommen (compact)</option>
                 </select>
             </div>
 
@@ -247,13 +265,13 @@
                 <label for="rows">Rijen per pagina</label>
                 <select id="rows">
                     <option value="4">4 rijen</option>
-                    <option value="5" selected>5 rijen</option>
-                    <option value="6">6 rijen</option>
+                    <option value="5">5 rijen</option>
+                    <option value="6" selected>6 rijen</option>
                 </select>
             </div>
 
             <div class="form-group full-width">
-                <label for="imageInput">Upload Logo / Afbeelding (optioneel)</label>
+                <label for="imageInput">Upload Logo / Achtergrond Afbeelding</label>
                 <input type="file" id="imageInput" accept="image/*">
             </div>
         </div>
@@ -281,7 +299,7 @@
                 reader.readAsDataURL(file);
             } else {
                 uploadedImageBase64 = '';
-                generateTickets();
+                    generateTickets();
             }
         });
 
@@ -307,11 +325,14 @@
                     <div class="ticket-card" style="height: ${cardHeight};">
                         <div class="ticket-header">
                             <span>${eventName}</span>
-                            ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="ticket-logo" alt="Logo">` : ''}
+                            <span style="font-size: 0.65rem; font-weight: normal; color: #666;">${eventDate}</span>
                         </div>
-                        <div class="ticket-number"><u>${formattedNum}</u></div>
+                        <div class="number-container">
+                            ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
+                            <div class="ticket-number"><u>${formattedNum}</u></div>
+                        </div>
                         <div class="ticket-footer">
-                            <span>${eventDate}</span>
+                            <span>Gewonnen? Check</span>
                             <span>${eventWebsite}</span>
                         </div>
                     </div>
