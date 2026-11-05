@@ -176,7 +176,7 @@
             margin-bottom: 2px;
         }
 
-        /* Container voor nummer met logo als watermerk op de achtergrond */
+        /* Container voor nummer met groter logo als achtergrond */
         .number-container {
             position: relative;
             display: flex;
@@ -189,10 +189,10 @@
 
         .bg-watermark {
             position: absolute;
-            max-width: 70%;
-            max-height: 70%;
+            max-width: 95%;  /* Vergroot van 70% naar 95% voor een groter logo */
+            max-height: 95%; 
             object-fit: contain;
-            opacity: 0.12; /* Subtiele transparantie */
+            opacity: 0.12; 
             pointer-events: none;
         }
 
@@ -224,125 +224,9 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer strakke tickets waarbij het logo als subtiele achtergrond achter het nummer verschijnt.</p>
+        <p>Genereer strakke tickets waarbij het logo groter op de achtergrond achter het nummer verschijnt.</p>
         
         <div class="form-grid">
             <div class="form-group">
                 <label for="eventName">Event Naam</label>
-                <input type="text" id="eventName" value="GO WILD AREA">
-            </div>
-
-            <div class="form-group">
-                <label for="eventDate">Datum</label>
-                <input type="text" id="eventDate" value="ZATERDAG 14/11/2026">
-            </div>
-
-            <div class="form-group">
-                <label for="eventWebsite">Website / URL</label>
-                <input type="text" id="eventWebsite" value="WWW.POGO.GENT">
-            </div>
-
-            <div class="form-group">
-                <label for="startNum">Startnummer</label>
-                <input type="number" id="startNum" value="1">
-            </div>
-
-            <div class="form-group">
-                <label for="endNum">Eindnummer</label>
-                <input type="number" id="endNum" value="100">
-            </div>
-
-            <div class="form-group">
-                <label for="cols">Kolommen per pagina</label>
-                <select id="cols">
-                    <option value="2">2 kolommen (groot)</option>
-                    <option value="3">3 kolommen</option>
-                    <option value="4" selected>4 kolommen (compact)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="rows">Rijen per pagina</label>
-                <select id="rows">
-                    <option value="4">4 rijen</option>
-                    <option value="5">5 rijen</option>
-                    <option value="6" selected>6 rijen</option>
-                </select>
-            </div>
-
-            <div class="form-group full-width">
-                <label for="imageInput">Upload Logo / Achtergrond Afbeelding</label>
-                <input type="file" id="imageInput" accept="image/*">
-            </div>
-        </div>
-
-        <div class="btn-container">
-            <button class="btn-primary" onclick="generateTickets()">Genereer Tickets</button>
-            <button class="btn-print" onclick="window.print()">🖨️ Afdrukken / PDF</button>
-        </div>
-    </div>
-
-    <!-- Tickets raster -->
-    <div id="ticketContainer" class="ticket-grid"></div>
-
-    <script>
-        let uploadedImageBase64 = '';
-
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedImageBase64 = event.target.result;
-                    generateTickets();
-                }
-                reader.readAsDataURL(file);
-            } else {
-                uploadedImageBase64 = '';
-                    generateTickets();
-            }
-        });
-
-        function generateTickets() {
-            const eventName = document.getElementById('eventName').value;
-            const eventDate = document.getElementById('eventDate').value;
-            const eventWebsite = document.getElementById('eventWebsite').value;
-            const startNum = parseInt(document.getElementById('startNum').value) || 1;
-            const endNum = parseInt(document.getElementById('endNum').value) || 50;
-            const cols = parseInt(document.getElementById('cols').value);
-            const rows = parseInt(document.getElementById('rows').value);
-
-            const container = document.getElementById('ticketContainer');
-            container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            
-            const cardHeight = Math.floor(270 / rows) + 'mm';
-            
-            let html = '';
-            for (let i = startNum; i <= endNum; i++) {
-                const formattedNum = String(i).padStart(3, '0');
-
-                html += `
-                    <div class="ticket-card" style="height: ${cardHeight};">
-                        <div class="ticket-header">
-                            <span>${eventName}</span>
-                            <span style="font-size: 0.65rem; font-weight: normal; color: #666;">${eventDate}</span>
-                        </div>
-                        <div class="number-container">
-                            ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
-                            <div class="ticket-number"><u>${formattedNum}</u></div>
-                        </div>
-                        <div class="ticket-footer">
-                            <span>Gewonnen? Check</span>
-                            <span>${eventWebsite}</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        window.onload = generateTickets;
-    </script>
-</body>
-</html>
+                <input
