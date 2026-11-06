@@ -114,7 +114,7 @@
             background-color: #218838;
         }
 
-        /* PRINT STYLING */
+        /* PRINT STYLING - Zorgt dat kleuren en lijnen exact meeprinten */
         @media print {
             body {
                 background: #fff;
@@ -125,35 +125,32 @@
                 display: none !important;
             }
             .ticket-grid {
-                display: grid;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                border: 1px dashed #555; /* Buitenste kader rondom het hele raster */
+                box-shadow: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .ticket-card {
                 break-inside: avoid;
                 page-break-inside: avoid;
-                box-shadow: none !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
         }
 
+        /* Het totale raster met een strakke, egale buitenrandomtrek */
         .ticket-grid {
             display: grid;
             gap: 0px; 
             max-width: 210mm;
             margin: 0 auto;
             background: #fff;
-            border: 1px dashed #555; /* Zorgt ervoor dat de linkerkant en buitenkant ook een snijlijn hebben op scherm */
+            border: 1.5px solid #444; /* Duidelijke, egale buitenrand rond het hele blok */
         }
 
+        /* Elk individueel ticket krijgt een vaste rechter- en ondergrens */
         .ticket-card {
-            border-right: 1px dashed #555;
-            border-bottom: 1px dashed #555;
-            margin-top: -1px;  
-            margin-left: -1px; 
+            border-right: 1.5px solid #444;
+            border-bottom: 1.5px solid #444;
             padding: 12px 14px;
             display: flex;
             flex-direction: column;
@@ -168,13 +165,13 @@
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #555;
+            color: #333;
             width: 100%;
             display: flex;
             justify-content: center;
             flex-direction: column;
             align-items: center;
-            border-bottom: 1px solid #e1e4e8;
+            border-bottom: 1px solid #ddd;
             padding-bottom: 4px;
             margin-bottom: 2px;
         }
@@ -211,9 +208,9 @@
 
         .ticket-footer {
             font-size: 0.65rem;
-            color: #666;
+            color: #444;
             width: 100%;
-            border-top: 1px solid #e1e4e8;
+            border-top: 1px solid #ddd;
             padding-top: 4px;
             display: flex;
             justify-content: center;
@@ -226,7 +223,7 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer tickets met doorlopende snijlijnen rondom en aan de linkerkant.</p>
+        <p>Genereer tickets met een volledig, strak omlijnd raster inclusief bovenrand.</p>
         
         <div class="form-grid">
             <div class="form-group">
@@ -311,7 +308,7 @@
             const eventWebsite = document.getElementById('eventWebsite').value;
             const startNum = parseInt(document.getElementById('startNum').value) || 1;
             const endNum = parseInt(document.getElementById('endNum').value) || 50;
-            const cols = parseInt(document.getElementById('cols').value);
+            const cols = parseInt(colsSelect = document.getElementById('cols').value);
             const rows = parseInt(document.getElementById('rows').value);
 
             const container = document.getElementById('ticketContainer');
@@ -327,7 +324,7 @@
                     <div class="ticket-card" style="height: ${cardHeight};">
                         <div class="ticket-header">
                             <span>${eventName}</span>
-                            <span style="font-size: 0.65rem; font-weight: normal; color: #666;">${eventDate}</span>
+                            <span style="font-size: 0.65rem; font-weight: normal; color: #555;">${eventDate}</span>
                         </div>
                         <div class="number-container">
                             ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
