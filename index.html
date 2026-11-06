@@ -188,8 +188,8 @@
 
         .bg-watermark {
             position: absolute;
-            max-width: 95%;  
-            max-height: 95%; 
+            max-width: 90%;  
+            max-height: 90%; 
             object-fit: contain;
             opacity: 0.12; 
             pointer-events: none;
@@ -223,7 +223,7 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Standaard voorzien van het POGO GENT watermerk. Upload een eigen afbeelding om dit te overschrijven.</p>
+        <p>Laadt standaard <strong>logo.png</strong> uit je GitHub-map als watermerk. Upload eventueel een andere afbeelding om dit te overschrijven.</p>
         
         <div class="form-grid">
             <div class="form-group">
@@ -270,7 +270,7 @@
             </div>
 
             <div class="form-group full-width">
-                <label for="imageInput">Upload Andere Afbeelding (Optioneel - vervangt POGO GENT logo)</label>
+                <label for="imageInput">Upload Andere Afbeelding (Optioneel - vervangt standaard logo)</label>
                 <input type="file" id="imageInput" accept="image/*">
             </div>
         </div>
@@ -285,15 +285,16 @@
     <div id="ticketContainer" class="ticket-grid"></div>
 
     <script>
-        // Gecorrigeerde base64 SVG voor het standaardlogo
-        let activeImageBase64 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzNiNGNjYSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5QT0dPPC90ZXh0Pjwvc3ZnPg==';
+        // Standaard verwijzing naar het logo-bestand in je GitHub repository
+        // (Zorg dat je een bestand genaamd 'logo.png' in dezelfde map uploadt op GitHub)
+        let activeImageSrc = 'logo.png';
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    activeImageBase64 = event.target.result; // Overschrijft het standaardlogo met de upload
+                    activeImageSrc = event.target.result; // Overschrijft tijdelijk met de geuploade afbeelding
                     generateTickets();
                 }
                 reader.readAsDataURL(file);
@@ -325,7 +326,7 @@
                             <span style="font-size: 0.65rem; font-weight: normal; color: #555;">${eventDate}</span>
                         </div>
                         <div class="number-container">
-                            ${activeImageBase64 ? `<img src="${activeImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
+                            ${activeImageSrc ? `<img src="${activeImageSrc}" class="bg-watermark" alt="Watermark">` : ''}
                             <div class="ticket-number"><u>${formattedNum}</u></div>
                         </div>
                         <div class="ticket-footer">
