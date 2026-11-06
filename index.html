@@ -285,8 +285,8 @@
     <div id="ticketContainer" class="ticket-grid"></div>
 
     <script>
-        // Standaard POGO GENT logo ingebouwd als fallback/default
-        let activeImageBase64 = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%233b4cca"/><text x="50" y="55" font-size="20" fill="white" text-anchor="middle" font-weight="bold">POGO</text></svg>';
+        // Gecorrigeerde base64 SVG voor het standaardlogo
+        let activeImageBase64 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzNiNGNjYSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5QT0dPPC90ZXh0Pjwvc3ZnPg==';
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
