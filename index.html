@@ -114,7 +114,7 @@
             background-color: #218838;
         }
 
-        /* PRINT STYLING - Zorgt dat kleuren en lijnen exact meeprinten */
+        /* PRINT STYLING */
         @media print {
             body {
                 background: #fff;
@@ -137,20 +137,20 @@
             }
         }
 
-        /* Het totale raster met een strakke, egale buitenrandomtrek */
+        /* Raster met lichte stippellijnen rondom */
         .ticket-grid {
             display: grid;
             gap: 0px; 
             max-width: 210mm;
             margin: 0 auto;
             background: #fff;
-            border: 1.5px solid #444; /* Duidelijke, egale buitenrand rond het hele blok */
+            border-top: 1px dashed #777;
+            border-left: 1px dashed #777;
         }
 
-        /* Elk individueel ticket krijgt een vaste rechter- en ondergrens */
         .ticket-card {
-            border-right: 1.5px solid #444;
-            border-bottom: 1.5px solid #444;
+            border-right: 1px dashed #777;
+            border-bottom: 1px dashed #777;
             padding: 12px 14px;
             display: flex;
             flex-direction: column;
@@ -223,7 +223,7 @@
 
     <div class="no-print">
         <h1>🎟️ Pokémon GO Event - Ticket Generator</h1>
-        <p>Genereer tickets met een volledig, strak omlijnd raster inclusief bovenrand.</p>
+        <p>Standaard voorzien van het POGO GENT watermerk. Upload een eigen afbeelding om dit te overschrijven.</p>
         
         <div class="form-grid">
             <div class="form-group">
@@ -270,7 +270,7 @@
             </div>
 
             <div class="form-group full-width">
-                <label for="imageInput">Upload Logo / Achtergrond Afbeelding</label>
+                <label for="imageInput">Upload Andere Afbeelding (Optioneel - vervangt POGO GENT logo)</label>
                 <input type="file" id="imageInput" accept="image/*">
             </div>
         </div>
@@ -285,20 +285,18 @@
     <div id="ticketContainer" class="ticket-grid"></div>
 
     <script>
-        let uploadedImageBase64 = '';
+        // Standaard POGO GENT logo ingebouwd als fallback/default
+        let activeImageBase64 = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%233b4cca"/><text x="50" y="55" font-size="20" fill="white" text-anchor="middle" font-weight="bold">POGO</text></svg>';
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    uploadedImageBase64 = event.target.result;
+                    activeImageBase64 = event.target.result; // Overschrijft het standaardlogo met de upload
                     generateTickets();
                 }
                 reader.readAsDataURL(file);
-            } else {
-                uploadedImageBase64 = '';
-                generateTickets();
             }
         });
 
@@ -308,7 +306,7 @@
             const eventWebsite = document.getElementById('eventWebsite').value;
             const startNum = parseInt(document.getElementById('startNum').value) || 1;
             const endNum = parseInt(document.getElementById('endNum').value) || 50;
-            const cols = parseInt(colsSelect = document.getElementById('cols').value);
+            const cols = parseInt(document.getElementById('cols').value);
             const rows = parseInt(document.getElementById('rows').value);
 
             const container = document.getElementById('ticketContainer');
@@ -327,7 +325,7 @@
                             <span style="font-size: 0.65rem; font-weight: normal; color: #555;">${eventDate}</span>
                         </div>
                         <div class="number-container">
-                            ${uploadedImageBase64 ? `<img src="${uploadedImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
+                            ${activeImageBase64 ? `<img src="${activeImageBase64}" class="bg-watermark" alt="Watermark">` : ''}
                             <div class="ticket-number"><u>${formattedNum}</u></div>
                         </div>
                         <div class="ticket-footer">
